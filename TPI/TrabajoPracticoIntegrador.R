@@ -34,35 +34,27 @@ crear_tabla_discreta <- function(source, columna, nombre_variable = "Variable"){
 }
 
 crear_tabla_continua <- function(source, columna, nombre_variable = "Variable") {
-  # Extraer los datos de la columna
   datos <- source[[columna]]
   
-  # Calcular número de intervalos usando regla de Sturges
   num_intervalos <- ceiling(1 + 3.322 * log10(length(datos)))
   
-  # Encontrar el mínimo y máximo redondeando a enteros
   min_valor <- floor(min(datos))
   max_valor <- ceiling(max(datos))
   
-  # Calcular el ancho de intervalo (redondeado hacia arriba para tener intervalos enteros)
   ancho <- ceiling((max_valor - min_valor) / num_intervalos)
   
-  # Crear límites con números enteros
   limites <- seq(min_valor, max_valor, by = ancho)
-  # Asegurar que el último valor esté incluido
+  
   if(max(limites) < max_valor) {
     limites <- c(limites, max(limites) + ancho)
   }
   
-  # Crear los cortes y la tabla de frecuencias
   cortes <- cut(datos, breaks = limites, include.lowest = TRUE, right = FALSE)
   tabla <- table(cortes)
   
-  # Calcular frecuencias
   frec_abs <- as.vector(tabla)
   frec_rel <- as.vector(round(prop.table(tabla), 4))
   
-  # Crear data frame con los resultados
   df <- data.frame(
     Variable = names(tabla),
     Frecuencia_Absoluta = frec_abs,

@@ -1,3 +1,5 @@
+if (!require(readxl)) install.packages("readxl")
+
 library(readxl)
 
 archivo <- file.choose()
@@ -69,4 +71,29 @@ tiempo_promedio
 #La plataforma de comunicación mas utilizada es "Slack", con un 34% de los usuarios.
 #En una semana se resolvieron 103 tickets.
 #El tiempo promedio de conexión fue de 72.84 minutos.
- 
+
+#Aprendiendo R, Semana 3.
+
+variable_tickets<-datos$Tickets_Soporte
+print(variable_tickets)
+
+faltantes_variable_tickets <- sum(is.na(datos$Tickets_Soporte))
+cat("Datos faltantes: ", faltantes_variable_tickets, "\n")
+
+print(summary(variable_tickets))
+
+media_tickets<-mean(variable_tickets, na.rm = TRUE)
+
+mediana_tickets<-median(variable_tickets, na.rm = TRUE)
+
+install.packages("modeest")
+library("modeest")
+
+moda_tickets<-mlv(variable_tickets, method = "mfv")
+
+desvio_estandar_tickets<-sd(variable_tickets, na.rm = TRUE)
+
+varianza_tickets<-var(variable_tickets, na.rm = TRUE)
+
+coef_var_tickets<-(desvio_estandar_tickets / media_tickets) * 100
+

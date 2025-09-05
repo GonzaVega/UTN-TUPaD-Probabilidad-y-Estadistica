@@ -69,42 +69,6 @@ crear_tabla_continua <- function(source, columna, nombre_variable = "Variable") 
   return(df)
 }
 
-# Manejo de datos.
-# Datos de satisfacción.
-
-niveles<-read_excel(archivo, sheet = "nivel de satisfacción")
-niveles <- data.frame(
-  Nivel = niveles[[1]],          
-  Descripcion = niveles[[2]]     
-)
-
-datos_temp<-datos
-datos_temp$`SATISFACCIÓN CON LA CARRERA` <- niveles$Descripcion[match(datos$`SATISFACCIÓN CON LA CARRERA`, niveles$Nivel)]
-
-nivel_orden <- c("Muy satisfecho", "Satisfecho", "Insatisfecho", "Muy insatisfecho")
-datos_temp$`SATISFACCIÓN CON LA CARRERA` <- factor(
-  datos_temp$`SATISFACCIÓN CON LA CARRERA`, 
-  levels = nivel_orden
-)
-
-tabla_satisfaccion <- crear_tabla_discreta(
-  datos_temp,
-  "SATISFACCIÓN CON LA CARRERA",
-  "Nivel de satisfacción"
-)
-
-print(tabla_satisfaccion)
-
-# Datos de tiempo de estudio.
-
-tabla_tiempo<-crear_tabla_continua(
-  datos,
-  "TIEMPO SEMANAL en HS. DEDIC. EST.",
-  "Intervalos de tiempo"
-)
-
-print(tabla_tiempo)
-
 # Funciones para medidas descriptivas.
 
 medidas_cuantitativas <- function(source, columna) {
@@ -160,6 +124,44 @@ medidas_cualitativas <- function(source, columna) {
   
   return(resultados)
 }
+
+# Manejo de datos.
+# Datos de satisfacción.
+
+niveles<-read_excel(archivo, sheet = "nivel de satisfacción")
+niveles <- data.frame(
+  Nivel = niveles[[1]],          
+  Descripcion = niveles[[2]]     
+)
+
+datos_temp<-datos
+datos_temp$`SATISFACCIÓN CON LA CARRERA` <- niveles$Descripcion[match(datos$`SATISFACCIÓN CON LA CARRERA`, niveles$Nivel)]
+
+nivel_orden <- c("Muy satisfecho", "Satisfecho", "Insatisfecho", "Muy insatisfecho")
+datos_temp$`SATISFACCIÓN CON LA CARRERA` <- factor(
+  datos_temp$`SATISFACCIÓN CON LA CARRERA`, 
+  levels = nivel_orden
+)
+
+tabla_satisfaccion <- crear_tabla_discreta(
+  datos_temp,
+  "SATISFACCIÓN CON LA CARRERA",
+  "Nivel de satisfacción"
+)
+
+print(tabla_satisfaccion)
+
+# Datos de tiempo de estudio.
+
+tabla_tiempo<-crear_tabla_continua(
+  datos,
+  "TIEMPO SEMANAL en HS. DEDIC. EST.",
+  "Intervalos de tiempo"
+)
+
+print(tabla_tiempo)
+
+# Medidas descriptivas.
 
 res_satisfaccion <- medidas_cualitativas(datos_temp, "SATISFACCIÓN CON LA CARRERA")
 print(res_satisfaccion)

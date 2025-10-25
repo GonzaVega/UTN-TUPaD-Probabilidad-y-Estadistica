@@ -189,6 +189,110 @@ df_satisfacción<- data.frame(nivel_de_Satisfacción = nombres, porcentaje = por
 
 diagrama_circular_satisfaccion<-ggplot(df_satisfacción, aes(x = "", y = porcentaje, fill = nivel_de_Satisfacción)) + geom_bar(stat = "identity", width = 1, color ="white") + coord_polar("y") + geom_text(aes(label = percent(porcentaje, accuracy = 0.1)), position = position_stack(vjust = 0.5)) + labs(title = "Nivel de Satisfacción", fill = "Nivel de Satisfacción") + theme_void()
 
+print(diagrama_circular_satisfaccion)
 print(res_tiempo)
 print(res_satisfaccion)
 print(niveles)
+
+# Respuesta 5.
+
+tabla_satisfaccion <- table(datos$`SATISFACCIÓN CON LA CARRERA`)
+probabilidades <- prop.table(tabla_satisfaccion)
+
+print(probabilidades)
+
+# a
+prob_5a <- round(1 - pbinom(9, size = 16, prob = 0.572), 4)
+print(prob_5a)
+
+# b
+prob_5b <- round(pbinom(8, size = 16, prob = 0.304) - pbinom(3, size = 16, prob = 0.304), 4)
+print(prob_5b)
+
+# c
+prob_5c <- round(pbinom(4, size = 16, prob = 0.064), 4)
+print(prob_5c)
+
+# d
+prob_5d <- dbinom(10, size = 16, prob = 0.060)
+# con redondeo.
+print(round(prob_5d, 4))
+# sin redondeo.
+print(prob_5d)
+
+# Respuesta 6
+
+# a
+prob_6a <- round(1 - ppois(5, lambda = 10), 4)
+print(prob_6a)
+
+# b
+prob_6b <- round(ppois(12, lambda = 20), 4)
+print(prob_6b)
+
+# c
+prob_6c <- round(dpois(8, lambda = 15) + dpois(9, lambda = 15), 4)
+print(prob_6c)
+
+# Respuesta 7
+
+media_estatura <- mean(datos$`ESTATURA CM.`)
+desvio_estatura <- sd(datos$`ESTATURA CM.`)
+
+cat("Media:", round(media_estatura, 4), "\n")
+cat("Desvío Estándar:", round(desvio_estatura, 4), "\n")
+
+# a
+prob_7a <- 1 - pnorm(179, mean = media_estatura, sd = desvio_estatura)
+print(round(prob_7a, 4))
+
+valores_x <- seq(140, 190, length.out = 1000)
+valores_y <- dnorm(valores_x, mean = media_estatura, sd = desvio_estatura)
+
+df_plot <- data.frame(x = valores_x, y = valores_y)
+
+ggplot(df_plot, aes(x = x, y = y)) +
+  geom_line(color = "black", linewidth = 1.5) +
+  geom_area(data = subset(df_plot, x >= 179), fill = "red", alpha = 0.8) +
+  labs(title = "a) Probabilidad de Estatura >= 179 cm", x = "Estatura (cm)", y = "Densidad") +
+  theme_minimal()
+
+# b
+prob_7b <- pnorm(172, mean = media_estatura, sd = desvio_estatura) - pnorm(147, mean = media_estatura, sd = desvio_estatura)
+print(round(prob_7b, 4))
+
+ggplot(df_plot, aes(x = x, y = y)) +
+  geom_line(color = "black", linewidth = 1.5) +
+  geom_area(data = subset(df_plot, x >= 147 & x <= 172), fill = "blue", alpha = 0.8) +
+  labs(title = "b) Probabilidad de Estatura entre 147 cm y 172 cm", x = "Estatura (cm)", y = "Densidad") +
+  theme_minimal()
+
+# c
+valor_7c <- qnorm(0.975, mean = media_estatura, sd = desvio_estatura)
+print(round(valor_7c, 4))
+
+ggplot(df_plot, aes(x = x, y = y)) +
+  geom_line(color = "black", linewidth = 1.5) +
+  geom_area(data = subset(df_plot, x <= valor_7c), fill = "green", alpha = 0.8) +
+  geom_area(data = subset(df_plot, x > valor_7c), fill = "tomato", alpha = 0.8) +
+  geom_vline(xintercept = valor_7c, color = "darkgreen", linetype = "dashed", linewidth = 1) +
+  labs(
+    title = "c) Valor que excede al 97.5% de las Estaturas",
+    subtitle = paste("Percentil 97.5 encontrado:", round(valor_7c, 2), "cm"),
+    x = "Estatura (cm)", y = "Densidad"
+  ) +
+  theme_minimal()
+
+
+
+
+
+
+
+
+
+
+
+
+
+

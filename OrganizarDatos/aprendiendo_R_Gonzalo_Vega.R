@@ -72,8 +72,8 @@ tiempo_promedio
 #En una semana se resolvieron 103 tickets.
 #El tiempo promedio de conexión fue de 72.84 minutos.
 
-#Aprendiendo R, Semana 3.
-
+# Aprendiendo R, Semana 3.
+# Analisis variable tickets.
 variable_tickets<-datos$Tickets_Soporte
 print(variable_tickets)
 
@@ -95,5 +95,69 @@ desvio_estandar_tickets<-sd(variable_tickets, na.rm = TRUE)
 
 varianza_tickets<-var(variable_tickets, na.rm = TRUE)
 
-coef_var_tickets<-(desvio_estandar_tickets / media_tickets) * 100
+cx_var_tickets<-(desvio_estandar_tickets / media_tickets) * 100
+
+message("\nDatos estadisticos Tickets: ")
+tabla_stats_tickets<-data.frame(
+  Media = round(media_tickets, 4),
+  Mediana = round(mediana_tickets, 4), 
+  Moda = paste(moda_tickets, collapse = ", "),
+  Varianza = round(varianza_tickets, 4),
+  Desvio_Estandar = round(desvio_estandar_tickets, 4),
+  Coef_Variacion_Tickets = round(cx_var_tickets, 4)
+)
+print(tabla_stats_tickets, row.names = FALSE)
+
+cuartiles_tickets <- quantile(variable_tickets, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+rango_intercuartil_tickets<-IQR(variable_tickets, na.rm = TRUE)
+cuartiles_tickets
+cat("RIC: ", rango_intercuartil_tickets, "\n")
+
+
+# Analisis de la variable tiempo de conexion.
+
+marcas_clase_tiempo<-( head(breaks, -1) + tail(breaks, -1) ) / 2
+print(marcas_clase_tiempo)
+
+media_continua<-sum(marcas_clase_tiempo * frec_abs_tiempo) / sum(frec_abs_tiempo)
+
+# Moda
+i_modal_tiempo<-which.max(frec_abs_tiempo)
+L_m<-breaks[i_modal_tiempo]
+f_m<-frec_abs_tiempo[i_modal_tiempo]
+f_1<-ifelse(i_modal_tiempo == 1, 0, frec_abs_tiempo[i_modal_tiempo - 1])
+f_2<-ifelse(i_modal_tiempo == length(frec_abs_tiempo), 0, frec_abs_tiempo[i_modal_tiempo + 1])
+
+moda_continua_tiempo<-L_m + ((f_m - f_1) / ((f_m - f_1) + (f_m - f_2))) * amplitud
+
+# Mediana
+frecuencia_acumulada_tiempo<-crear_frecuencias_acumuladas(frec_abs_tiempo)
+n_total<-sum(frec_abs_tiempo)
+n_2<-n_total / 2
+clase_mediana_index<-which(frecuencia_acumulada_tiempo >= n_2)[1]
+L<- breaks[clase_mediana_index]
+F_anterior<-ifelse(clase_mediana_index == 1, 0, frecuencia_acumulada_tiempo[clase_mediana_index - 1])
+f_mediana<-frec_abs_tiempo[clase_mediana_index]
+mediana_tiempo<- L + ((n_2 - F_anterior) / f_mediana) * amplitud
+
+# Medidas de dispersion
+varianza_continua<-sum(frec_abs_tiempo * (marcas_clase_tiempo - media_continua)^2) / (n_total - 1)
+desvio_estandar_tiempo<-sqrt(varianza_continua)
+cx_var_tiempo<-(desvio_estandar_tiempo / media_continua) * 100
+
+message("\nResultados Variable Tiempo de Conexion: ")
+tiempo_stats<-data.frame(
+  Media = round(media_continua, 4),
+  Moda = round(moda_continua_tiempo, 4),
+  Mediana = round(mediana_tiempo, 4),
+  Varianza = round(varianza_continua, 4),
+  Desvio_Estandar = round(desvio_estandar_tiempo, 4),
+  Coef_Variacion_pct = round(cx_var_tiempo, 4)
+)
+
+print(tiempo_stats, row.names = FALSE)
+
+message("\nDatos estadisticos Tickets: ")
+print(tabla_stats_tickets, row.names = FALSE)
 

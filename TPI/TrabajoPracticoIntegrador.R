@@ -284,15 +284,75 @@ ggplot(df_plot, aes(x = x, y = y)) +
   theme_minimal()
 
 
+# Pregunta 8.
+poblacion_peso <- as.vector(datos$`PESO KG.`)
 
+media_peso_poblacion <- mean(poblacion_peso, na.rm = TRUE)
+print(media_peso_poblacion)
+cat("Promedio de peso en la población: ", round(media_peso_poblacion, 4))
 
+num_muestras <- 6
+tamano_muestra <- 20
 
+set.seed(123)
 
+promedios_muestrales <- numeric(num_muestras)
 
+lista_muestras <- list()
 
+for (i in 1:num_muestras){
+  muestra_actual <- sample(poblacion_peso, tamano_muestra, replace = FALSE)
+  
+  promedios_muestrales[i] <- mean(muestra_actual)
+  
+  lista_muestras[[i]] <- muestra_actual
+  
+  cat("Promedio Muestra", i, ":", round(promedios_muestrales[i], 4), "\n")
+  
+}
 
+resultado_peso <- data.frame(
+  muestra = paste0("Muestra_", 1:num_muestras),
+  media = round(promedios_muestrales, 4)
+  )
 
+print(resultado_peso)
 
+promedio_muestras <- round(mean(promedios_muestrales), 4)
 
+df_grafico_8 <- data.frame(
+  Nombre_Muestra = as.factor(1:6), 
+  Promedio = promedios_muestrales
+)
+
+ggplot(df_grafico_8, aes(x = Nombre_Muestra, y = Promedio)) +
+  geom_col(fill = "skyblue", color = "black", alpha = 0.8) +
+  
+  geom_hline(
+    yintercept = media_peso_poblacion,
+    color = "red",
+    linetype = "dashed",
+    linewidth = 1
+  ) +
+  
+  geom_hline(
+    yintercept = promedio_muestras,
+    color = "blue",
+    linetype = "dotted",
+    linewidth = 1
+  ) +
+  
+  coord_cartesian(ylim = c(65, 76)) +
+  
+  labs(
+    title = "Comparación de Medias Muestrales vs. Media Poblacional (con Zoom)",
+    subtitle = paste(
+      " Línea Roja (Media Poblacional):", round(media_peso_poblacion, 4), "\n",
+      "Línea Azul (Media Muestral):", round(promedio_muestras, 4) 
+    ),
+    y = "Peso Promedio (kg)",
+    x = "Muestra Aleatoria"
+  ) +
+  theme_minimal()
 
 
